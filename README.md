@@ -1,3 +1,3 @@
 # exceltojson
-Apache NIFI Excel to JSON processor
+Apache NIFI Excel to JSON and JSON to Excel processors
 
