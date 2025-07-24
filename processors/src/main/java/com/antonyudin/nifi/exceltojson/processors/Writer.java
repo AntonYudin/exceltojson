@@ -34,19 +34,16 @@ public interface Writer {
 		}
 	}
 
-	public void sheetStarted(final String name);
-	public void sheetEnded();
-	public void rowAdded();
-	public void columnAdded(final String name, final boolean value, final Style style);
-	public void columnAdded(final String name, final int value, final Style style);
-	public void columnAdded(final String name, final String value, final Style style);
-	public void columnAdded(final String name, final String value, final boolean formula, final Style style);
-	public void columnAdded(final String name, final BigDecimal value, final Style style);
+	public void startSheet(final String name);
+	public void endSheet();
+	public void addRow();
+	public void addColumn(final String name, final boolean value, final Style style);
+	public void addColumn(final String name, final int value, final Style style);
+	public void addColumn(final String name, final String value, final Style style);
+	public void addColumn(final String name, final String value, final boolean formula, final Style style);
+	public void addColumn(final String name, final BigDecimal value, final Style style);
 	public void mergeColumns(final int numberOfColumns);
-
-	public enum Type {
-		Boolean, String, Number
-	}
+	public void setPrintArea(final String reference);
 
 }
 

@@ -70,6 +70,7 @@ public class JsonToExcel extends AbstractProcessor {
 
 	private final static Logger logger = Logger.getLogger(JsonToExcel.class.getName());
 
+
 	public static final PropertyDescriptor STREAMING_PROPERTY = new PropertyDescriptor
 		.Builder()
 		.name("Use Streaming POI Workbook")

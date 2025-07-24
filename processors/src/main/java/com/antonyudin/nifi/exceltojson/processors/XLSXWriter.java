@@ -51,6 +51,7 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	private final int autoSizeColumns;
 	private Sheet sheet;
 	private Row row;
+	private int sheetIndex = -1;
 	private int rowNumber;
 	private int cellNumber;
 	private int maxCellNumber;
@@ -71,8 +72,9 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	}
 
 	@Override
-	public void sheetStarted(final String name) {
+	public void startSheet(final String name) {
 		sheet = workbook.createSheet(name);
+		sheetIndex++;
 		if (autoSizeColumns != 0) {
 			if (sheet instanceof SXSSFSheet s)
 				s.trackAllColumnsForAutoSizing();
@@ -83,7 +85,7 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	}
 
 	@Override
-	public void sheetEnded() {
+	public void endSheet() {
 		if ((autoSizeColumns != 0) && (!autoSized)) {
 			for (var i = 0; i < maxCellNumber; i++)
 				sheet.autoSizeColumn(i, true);
@@ -93,7 +95,7 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	private boolean autoSized = false;
 
 	@Override
-	public void rowAdded() {
+	public void addRow() {
 
 		row = sheet.createRow(rowNumber++);
 
@@ -132,37 +134,37 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	}
 
 	@Override
-	public void columnAdded(final String name, final String value, final Style style) {
+	public void addColumn(final String name, final String value, final Style style) {
 		final var cell = row.createCell(nextCell());
 		cell.setCellValue(value);
 		setStyle(cell, style);
 	}
 
 	@Override
-	public void columnAdded(final String name, final boolean value, final Style style) {
+	public void addColumn(final String name, final boolean value, final Style style) {
 		final var cell = row.createCell(nextCell());
 		cell.setCellValue(value);
 		setStyle(cell, style);
 	}
 
 	@Override
-	public void columnAdded(final String name, final int value, final Style style) {
+	public void addColumn(final String name, final int value, final Style style) {
 		final var cell = row.createCell(nextCell());
 		cell.setCellValue(value);
 		setStyle(cell, style);
 	}
 
 	@Override
-	public void columnAdded(final String name, final BigDecimal value, final Style style) {
+	public void addColumn(final String name, final BigDecimal value, final Style style) {
 		final var cell = row.createCell(nextCell());
 		cell.setCellValue(value.doubleValue());
 		setStyle(cell, style);
 	}
 
 	@Override
-	public void columnAdded(final String name, final String value, final boolean formula, final Style style) {
+	public void addColumn(final String name, final String value, final boolean formula, final Style style) {
 		if (!formula) {
-			columnAdded(name, value, style);
+			addColumn(name, value, style);
 			return;
 		}
 		final var cell = row.createCell(nextCell());
@@ -200,6 +202,11 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	@Override
 	public void mergeColumns(final int numberOfColumns) {
 		sheet.addMergedRegion(new CellRangeAddress(rowNumber - 1, rowNumber - 1, cellNumber, cellNumber + numberOfColumns - 1));
+	}
+
+	@Override
+	public void setPrintArea(final String reference) {
+		workbook.setPrintArea(sheetIndex, reference);
 	}
 
 }

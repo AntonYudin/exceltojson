@@ -104,13 +104,13 @@ public class JsonToExcelConverter {
 		for (var item: sheets) {
 			if (item instanceof JsonObject o) {
 				final var name = o.getString("name");
-				writer.sheetStarted(name);
+				writer.startSheet(name);
 				final var rowsArray = o.getJsonArray("rows");
 				final var rows = new ArrayList<Row>();
 				if (rowsArray != null) {
 					for (var r: rowsArray) {
 						if (r instanceof JsonObject object) {
-							writer.rowAdded();
+							writer.addRow();
 							for (var entry: object.entrySet()) {
 								final var value = entry.getValue();
 								addCell(writer, entry.getKey(), value, null);
@@ -118,7 +118,10 @@ public class JsonToExcelConverter {
 						}
 					}
 				}
-				writer.sheetEnded();
+				final var printArea = o.getString("printArea", null);
+				if (printArea != null)
+					writer.setPrintArea(printArea);
+				writer.endSheet();
 			}
 		}
 		return result;
@@ -127,7 +130,7 @@ public class JsonToExcelConverter {
 	protected void addCell(final Writer writer, final String name, final JsonValue value, final Writer.Style style) {
 
 		if (value == null) {
-			writer.columnAdded(name, (String) null, style);
+			writer.addColumn(name, (String) null, style);
 			return;
 		}
 
@@ -145,7 +148,7 @@ public class JsonToExcelConverter {
 					newStyle = Writer.Style.fontHeight(fontHeight, newStyle);
 
 				if (object.getBoolean("formula", false)) {
-					writer.columnAdded(name, object.getString("value"), true, newStyle);
+					writer.addColumn(name, object.getString("value"), true, newStyle);
 				} else {
 					addCell(writer, name, object.get("value"), newStyle);
 				}
@@ -154,15 +157,15 @@ public class JsonToExcelConverter {
 				if (columns > 1)
 					writer.mergeColumns(columns);
 			}
-			case JsonNumber number -> writer.columnAdded(name, number.bigDecimalValue(), style);
-			case JsonString string -> writer.columnAdded(name, string.getString(), style);
+			case JsonNumber number -> writer.addColumn(name, number.bigDecimalValue(), style);
+			case JsonString string -> writer.addColumn(name, string.getString(), style);
 			default -> {
 				if (value == JsonValue.TRUE)
-					writer.columnAdded(name, true, style);
+					writer.addColumn(name, true, style);
 				else if (value == JsonValue.FALSE)
-					writer.columnAdded(name, false, style);
+					writer.addColumn(name, false, style);
 				else if (value == JsonValue.NULL)
-					writer.columnAdded(name, (String) null, style);
+					writer.addColumn(name, (String) null, style);
 			}
 		}
 	}
