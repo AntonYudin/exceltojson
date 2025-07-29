@@ -1,5 +1,5 @@
 # exceltojson
-Apache NIFI Excel to JSON and JSON to Excel processors
+Apache NIFI Excel to JSON and JSON to Excel processors utilizing [Apache POI library](https://poi.apache.org)
 
 ## ExcelToJson
 
