@@ -21,21 +21,80 @@ import java.math.BigDecimal;
 
 public interface Writer {
 
+	public enum ImageType {
+		png, jpeg
+	}
+
 	public enum Alignment {
 		left, center, right
 	}
 
-	public record Style(Alignment alignment, Integer fontHeight) {
+	public record Style(
+		Alignment alignment,
+		Integer fontHeight,
+		Boolean fontWeightBold,
+		String color,
+		String fillColor
+	) {
+
+		public static Style of() {
+			return new Style(null, null, null, null, null);
+		}
+
 		public static Style aligned(final Alignment alignment, final Style style) {
-			return new Style(alignment, (style != null? style.fontHeight(): null));
+			return new Style(
+				alignment,
+				(style != null? style.fontHeight(): null),
+				(style != null? style.fontWeightBold(): null),
+				(style != null? style.color(): null),
+				(style != null? style.fillColor(): null)
+			);
 		}
+
 		public static Style fontHeight(final Integer fontHeight, final Style style) {
-			return new Style((style != null? style.alignment(): null), fontHeight);
+			return new Style(
+				(style != null? style.alignment(): null),
+				fontHeight,
+				(style != null? style.fontWeightBold(): null),
+				(style != null? style.color(): null),
+				(style != null? style.fillColor(): null)
+			);
 		}
+
+		public static Style fontWeightBold(final boolean bold, final Style style) {
+			return new Style(
+				(style != null? style.alignment(): null),
+				(style != null? style.fontHeight(): null),
+				bold,
+				(style != null? style.color(): null),
+				(style != null? style.fillColor(): null)
+			);
+		}
+
+		public static Style color(final String color, final Style style) {
+			return new Style(
+				(style != null? style.alignment(): null),
+				(style != null? style.fontHeight(): null),
+				(style != null? style.fontWeightBold(): null),
+				color,
+				(style != null? style.fillColor(): null)
+			);
+		}
+
+		public static Style fillColor(final String fillColor, final Style style) {
+			return new Style(
+				(style != null? style.alignment(): null),
+				(style != null? style.fontHeight(): null),
+				(style != null? style.fontWeightBold(): null),
+				(style != null? style.color(): null),
+				fillColor
+			);
+		}
+
 	}
 
-	public void startSheet(final String name);
-	public void endSheet();
+	public void startSheet(final String name, final Style style, final boolean selected, final boolean active);
+	public void endSheet() throws Exception;
 	public void addRow();
 	public void addColumn(final String name, final boolean value, final Style style);
 	public void addColumn(final String name, final int value, final Style style);
@@ -44,6 +103,7 @@ public interface Writer {
 	public void addColumn(final String name, final BigDecimal value, final Style style);
 	public void mergeColumns(final int numberOfColumns);
 	public void setPrintArea(final String reference);
+	public void addImage(final String reference, final String image, final ImageType type, final double scale) throws Exception;
 
 }
 

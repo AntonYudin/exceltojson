@@ -37,7 +37,7 @@ public class JsonToExcelConverterTest {
 				final var outputStream = new FileOutputStream("test.xlsx");
 		) {
 			System.err.println("inputStream: " + inputStream);
-			(new JsonToExcelConverter()).convert(inputStream, outputStream, null, JsonToExcelConverter.Type.XLSX, true, 4);
+			(new JsonToExcelConverter()).convert(inputStream, outputStream, null, JsonToExcelConverter.Type.XLSX, true, 10);
 //			System.err.println("result: " + (new String(outputStream.toByteArray(), "UTF-8")));
 		}
 	}

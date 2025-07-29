@@ -99,14 +99,16 @@ public class JsonToExcelConverter {
 		}
 	}
 
-	protected List<Sheet> parseSheets(final JsonArray sheets, final Writer writer) {
+	protected List<Sheet> parseSheets(final JsonArray sheets, final Writer writer) throws Exception {
 		final var result = new ArrayList<Sheet>();
 		for (var item: sheets) {
 			if (item instanceof JsonObject o) {
 				final var name = o.getString("name");
-				writer.startSheet(name);
+				final var selected = o.getBoolean("selected", false);
+				final var active = o.getBoolean("active", false);
+				writer.startSheet(name, getStyle(o), selected, active);
 				final var rowsArray = o.getJsonArray("rows");
-				final var rows = new ArrayList<Row>();
+			//	final var rows = new ArrayList<Row>();
 				if (rowsArray != null) {
 					for (var r: rowsArray) {
 						if (r instanceof JsonObject object) {
@@ -118,12 +120,54 @@ public class JsonToExcelConverter {
 						}
 					}
 				}
+
+				{
+					final var imagesArray = o.getJsonArray("images");
+					if (imagesArray != null) {
+						for (var i: imagesArray) {
+							if (i instanceof JsonObject object) {
+								final var reference = object.getString("reference", null);
+								final var url = object.getString("url", null);
+								final var type = object.getString("type", null);
+								final var scale = object.getJsonNumber("scale");
+								writer.addImage(reference, url, Writer.ImageType.valueOf(type), scale == null? 1.0: scale.doubleValue());
+							}
+						}
+					}
+				}
+
 				final var printArea = o.getString("printArea", null);
 				if (printArea != null)
 					writer.setPrintArea(printArea);
 				writer.endSheet();
 			}
 		}
+		return result;
+	}
+
+	protected Writer.Style getStyle(final JsonObject object) {
+
+		Writer.Style result = null;
+
+		final var alignment = object.getString("alignment", null);
+		if (alignment != null)
+			result = Writer.Style.aligned(Writer.Alignment.valueOf(alignment), result);
+
+		final var fontHeight = object.getInt("fontHeight", -1);
+		if (fontHeight >= 0)
+			result = Writer.Style.fontHeight(fontHeight, result);
+
+		final var color = object.getString("color", null);
+		if (color != null)
+			result = Writer.Style.color(color, result);
+
+		final var fillColor = object.getString("fillColor", null);
+		if (fillColor != null)
+			result = Writer.Style.fillColor(fillColor, result);
+
+		if (object.getBoolean("fontWeightBold", false))
+			result = Writer.Style.fontWeightBold(true, result);
+
 		return result;
 	}
 
@@ -137,15 +181,7 @@ public class JsonToExcelConverter {
 		switch (value) {
 			case JsonObject object -> {
 
-				Writer.Style newStyle = style;
-
-				final var alignment = object.getString("alignment", null);
-				if (alignment != null)
-					newStyle = Writer.Style.aligned(Writer.Alignment.valueOf(alignment), newStyle);
-
-				final var fontHeight = object.getInt("fontHeight", -1);
-				if (fontHeight >= 0)
-					newStyle = Writer.Style.fontHeight(fontHeight, newStyle);
+				Writer.Style newStyle = getStyle(object);
 
 				if (object.getBoolean("formula", false)) {
 					writer.addColumn(name, object.getString("value"), true, newStyle);

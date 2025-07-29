@@ -2,6 +2,7 @@
 	"sheets": [
 		{
 			"name": "sheet 1",
+			"color": "ff00ff00",
 			"printArea": "$A$1:$B$2",
 			"rows": [
 				{
@@ -18,14 +19,29 @@
 		},
 		{
 			"name": "sheet 2",
+			"color": "ffff00ff",
+			"selected": false,
+			"active": true,
+			"images": [
+				{
+					"reference": "A8:G10",
+					"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/330px-PNG_transparency_demonstration_1.png",
+					"type": "png",
+					"scale": 1.3
+				}
+			],
 			"rows": [
 				{
 					"A": {
 						"value": "Report",
 						"columns": 3,
 						"alignment": "center",
-						"fontHeight": 32
-					}
+						"fontHeight": 32,
+						"color": "ff0000ff",
+						"fillColor": "ffffde21",
+						"fontWeightBold": true
+					},
+					"D": "Test"
 				},
 				{
 					"A": 5,
@@ -53,7 +69,61 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "sheet 3",
+			"color": "ff00ffff",
+			"selected": false,
+			"active": true,
+			"images": [
+				{
+					"reference": "A8:G10",
+					"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/330px-PNG_transparency_demonstration_1.png",
+					"type": "png",
+					"scale": 1.3
+				}
+			],
+			"rows": [
+				{
+					"A": {
+						"value": "Report",
+						"columns": 3,
+						"alignment": "center",
+						"fontHeight": 32,
+						"color": "ff0000ff",
+						"fillColor": "ffffde21",
+						"fontWeightBold": true
+					},
+					"D": "Test"
+				},
+				{
+					"A": 5,
+					"B": "This is text\nsecond line\nthird line",
+					"C": 123.456
+				},
+				{
+					"A": true,
+					"B": 8,
+					"C": 789.012
+				},
+				{
+					"A": {
+						"value": "SUM(A1:A2)",
+						"formula": true
+					},
+					"B": 9 ,
+					"C": 345.678
+				},
+				{
+					"A": {
+						"value": "end",
+						"alignment": "center",
+						"fontHeight": 32
+					}
+				}
+			]
 		}
+
 	]
 }
 
