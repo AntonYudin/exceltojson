@@ -9,31 +9,32 @@ An example of an output document:
 
 ```JSON
 {
-    "sheets": [
-        {
-            "name": "Sheet1",
-            "content": {
-                "rows": [
-                    {
-                    },
-                    {
-                        "A": "header A2",
-                        "B": "header B2",
-                        "C": "header C2"
-                    },
-                    {
-                        "A": "header A3",
-                        "B": "header B3",
-                        "C": "header C3"
-                    },
-                    {
-                        "A": "cell A4",
-                        "B": "cell B4",
-                        "C": "cell C4"
-                    }
-                ]
-            }
-        }
+	"sheets": [
+		{
+			"name": "Sheet1",
+			"content": {
+				"rows": [
+					{ },
+					{
+						"A": "header A2",
+						"B": "header B2",
+						"C": "header C2"
+					},
+					{
+						"A": "header A3",
+						"B": "header B3",
+						"C": "header C3"
+					},
+					{
+						"A": "cell A4",
+						"B": "cell B4",
+						"C": "cell C4"
+					}
+				]
+			}
+		}
+	]
+}
 ```
 
 ## JsonToExcel
