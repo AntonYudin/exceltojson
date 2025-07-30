@@ -90,15 +90,14 @@ public class XLSXWriter implements Writer, AutoCloseable {
 	public void close() throws Exception {
 		workbook.write(outputStream);
 		workbook.close();
-		switch (workbook) {
-			case SXSSFWorkbook sxssfWorkbook -> sxssfWorkbook.dispose();
-			default -> {}
-		}
+		if (workbook instanceof SXSSFWorkbook sxssfWorkbook)
+			sxssfWorkbook.dispose();
 	}
 
 	@Override
 	public void startSheet(final String name, final Style style, final boolean selected, final boolean active) {
 		images.clear();
+		columnWidths.clear();
 		sheet = workbook.createSheet(name);
 		sheetIndex++;
 		if (autoSizeColumns != 0) {
@@ -145,6 +144,9 @@ public class XLSXWriter implements Writer, AutoCloseable {
 			for (var i = 0; i <= maxCellNumber; i++)
 				sheet.autoSizeColumn(i, true);
 		}
+
+		for (var entry: columnWidths.entrySet())
+			sheet.setColumnWidth(entry.getKey(), entry.getValue());
 
 		addImages();
 
@@ -265,6 +267,8 @@ public class XLSXWriter implements Writer, AutoCloseable {
 
 	private int maxFontHeight = 0;
 
+	private Map<Integer, Integer> columnWidths = new HashMap<>();
+
 	protected void setStyle(final Cell cell, final Style style) {
 		final var effectiveStyle = (style == null? defaultStyle: style);
 		var s = stylesCache.get(effectiveStyle);
@@ -320,6 +324,9 @@ public class XLSXWriter implements Writer, AutoCloseable {
 			if (height > maxFontHeight)
 				maxFontHeight =  height;
 		}
+
+		if (effectiveStyle.width() != null)
+			columnWidths.put(cellNumber, effectiveStyle.width());
 
 		cell.setCellStyle(s);
 	}

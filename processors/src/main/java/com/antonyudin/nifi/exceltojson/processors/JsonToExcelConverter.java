@@ -168,6 +168,10 @@ public class JsonToExcelConverter {
 		if (object.getBoolean("fontWeightBold", false))
 			result = Writer.Style.fontWeightBold(true, result);
 
+		final var width = object.getInt("width", -1);
+		if (width >= 0)
+			result = Writer.Style.width(width, result);
+
 		return result;
 	}
 

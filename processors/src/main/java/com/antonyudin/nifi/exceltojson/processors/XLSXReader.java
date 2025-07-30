@@ -39,9 +39,10 @@ public class XLSXReader implements Reader {
 	public void read(final InputStream inputStream, final Handler handler) throws Exception {
 		logger.info("read(" + inputStream + ", " + handler + ")");
 
-		try (final var pkg = OPCPackage.open(inputStream)) {
-
-			final var workbook = new XSSFWorkbook(pkg);
+		try (
+			final var pkg = OPCPackage.open(inputStream);
+			final var workbook = new XSSFWorkbook(pkg)
+		) {
 
 			final var formatter = new DataFormatter();
 

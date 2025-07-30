@@ -41,7 +41,10 @@
 						"fillColor": "ffffde21",
 						"fontWeightBold": true
 					},
-					"D": "Test"
+					"D": {
+						"value": "Long Width",
+						"width": 5120
+					}
 				},
 				{
 					"A": 5,

@@ -34,11 +34,12 @@ public interface Writer {
 		Integer fontHeight,
 		Boolean fontWeightBold,
 		String color,
-		String fillColor
+		String fillColor,
+		Integer width
 	) {
 
 		public static Style of() {
-			return new Style(null, null, null, null, null);
+			return new Style(null, null, null, null, null, null);
 		}
 
 		public static Style aligned(final Alignment alignment, final Style style) {
@@ -47,7 +48,8 @@ public interface Writer {
 				(style != null? style.fontHeight(): null),
 				(style != null? style.fontWeightBold(): null),
 				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null)
+				(style != null? style.fillColor(): null),
+				(style != null? style.width(): null)
 			);
 		}
 
@@ -57,7 +59,8 @@ public interface Writer {
 				fontHeight,
 				(style != null? style.fontWeightBold(): null),
 				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null)
+				(style != null? style.fillColor(): null),
+				(style != null? style.width(): null)
 			);
 		}
 
@@ -67,7 +70,8 @@ public interface Writer {
 				(style != null? style.fontHeight(): null),
 				bold,
 				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null)
+				(style != null? style.fillColor(): null),
+				(style != null? style.width(): null)
 			);
 		}
 
@@ -77,7 +81,8 @@ public interface Writer {
 				(style != null? style.fontHeight(): null),
 				(style != null? style.fontWeightBold(): null),
 				color,
-				(style != null? style.fillColor(): null)
+				(style != null? style.fillColor(): null),
+				(style != null? style.width(): null)
 			);
 		}
 
@@ -87,11 +92,24 @@ public interface Writer {
 				(style != null? style.fontHeight(): null),
 				(style != null? style.fontWeightBold(): null),
 				(style != null? style.color(): null),
-				fillColor
+				fillColor,
+				(style != null? style.width(): null)
+			);
+		}
+
+		public static Style width(final Integer width, final Style style) {
+			return new Style(
+				(style != null? style.alignment(): null),
+				(style != null? style.fontHeight(): null),
+				(style != null? style.fontWeightBold(): null),
+				(style != null? style.color(): null),
+				(style != null? style.fillColor(): null),
+				width
 			);
 		}
 
 	}
+
 
 	public void startSheet(final String name, final Style style, final boolean selected, final boolean active);
 	public void endSheet() throws Exception;
