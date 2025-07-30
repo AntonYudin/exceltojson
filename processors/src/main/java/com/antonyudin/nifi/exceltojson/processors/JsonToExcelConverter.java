@@ -147,32 +147,32 @@ public class JsonToExcelConverter {
 
 	protected Writer.Style getStyle(final JsonObject object) {
 
-		Writer.Style result = null;
+		final var builder = new Writer.Style.Builder();
 
 		final var alignment = object.getString("alignment", null);
 		if (alignment != null)
-			result = Writer.Style.aligned(Writer.Alignment.valueOf(alignment), result);
+			 builder.aligned(Writer.Alignment.valueOf(alignment));
 
 		final var fontHeight = object.getInt("fontHeight", -1);
 		if (fontHeight >= 0)
-			result = Writer.Style.fontHeight(fontHeight, result);
+			builder.fontHeight(fontHeight);
 
 		final var color = object.getString("color", null);
 		if (color != null)
-			result = Writer.Style.color(color, result);
+			builder.color(color);
 
 		final var fillColor = object.getString("fillColor", null);
 		if (fillColor != null)
-			result = Writer.Style.fillColor(fillColor, result);
+			builder.fillColor(fillColor);
 
 		if (object.getBoolean("fontWeightBold", false))
-			result = Writer.Style.fontWeightBold(true, result);
+			builder.fontWeightBold(true);
 
 		final var width = object.getInt("width", -1);
 		if (width >= 0)
-			result = Writer.Style.width(width, result);
+			builder.width(width);
 
-		return result;
+		return (builder.isEmpty()? null: builder.build());
 	}
 
 	protected void addCell(final Writer writer, final String name, final JsonValue value, final Writer.Style style) {

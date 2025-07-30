@@ -42,72 +42,72 @@ public interface Writer {
 			return new Style(null, null, null, null, null, null);
 		}
 
-		public static Style aligned(final Alignment alignment, final Style style) {
-			return new Style(
-				alignment,
-				(style != null? style.fontHeight(): null),
-				(style != null? style.fontWeightBold(): null),
-				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null),
-				(style != null? style.width(): null)
-			);
-		}
+		public static class Builder {
 
-		public static Style fontHeight(final Integer fontHeight, final Style style) {
-			return new Style(
-				(style != null? style.alignment(): null),
-				fontHeight,
-				(style != null? style.fontWeightBold(): null),
-				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null),
-				(style != null? style.width(): null)
-			);
-		}
+			private Alignment alignment;
+			private Integer fontHeight;
+			private Boolean fontWeightBold;
+			private String color;
+			private String fillColor;
+			private Integer width;
 
-		public static Style fontWeightBold(final boolean bold, final Style style) {
-			return new Style(
-				(style != null? style.alignment(): null),
-				(style != null? style.fontHeight(): null),
-				bold,
-				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null),
-				(style != null? style.width(): null)
-			);
-		}
+			public Builder aligned(final Alignment alignment) {
+				this.alignment = alignment;
+				return this;
+			}
 
-		public static Style color(final String color, final Style style) {
-			return new Style(
-				(style != null? style.alignment(): null),
-				(style != null? style.fontHeight(): null),
-				(style != null? style.fontWeightBold(): null),
-				color,
-				(style != null? style.fillColor(): null),
-				(style != null? style.width(): null)
-			);
-		}
+			public Builder fontHeight(final Integer fontHeight) {
+				this.fontHeight = fontHeight;
+				return this;
+			}
 
-		public static Style fillColor(final String fillColor, final Style style) {
-			return new Style(
-				(style != null? style.alignment(): null),
-				(style != null? style.fontHeight(): null),
-				(style != null? style.fontWeightBold(): null),
-				(style != null? style.color(): null),
-				fillColor,
-				(style != null? style.width(): null)
-			);
-		}
+			public Builder fontWeightBold(final boolean bold) {
+				this.fontWeightBold = bold;
+				return this;
+			}
 
-		public static Style width(final Integer width, final Style style) {
-			return new Style(
-				(style != null? style.alignment(): null),
-				(style != null? style.fontHeight(): null),
-				(style != null? style.fontWeightBold(): null),
-				(style != null? style.color(): null),
-				(style != null? style.fillColor(): null),
-				width
-			);
-		}
+			public Builder color(final String color) {
+				this.color = color;
+				return this;
+			}
 
+			public Builder fillColor(final String fillColor) {
+				this.fillColor = fillColor;
+				return this;
+			}
+
+			public Builder width(final Integer width) {
+				this.width = width;
+				return this;
+			}
+
+			public Style build() {
+				return new Style(
+					alignment,
+					fontHeight,
+					fontWeightBold,
+					color,
+					fillColor,
+					width
+				);
+			}
+
+			public boolean isEmpty() {
+				if (alignment != null)
+					return false;
+				if (fontHeight != null)
+					return false;
+				if (fontWeightBold != null)
+					return false;
+				if (color != null)
+					return false;
+				if (fillColor != null)
+					return false;
+				if (width != null)
+					return false;
+				return true;
+			}
+		}
 	}
 
 
