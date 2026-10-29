@@ -85,6 +85,17 @@ public class ExcelToJson extends AbstractProcessor {
 		.build()
 	;
 
+	public static final PropertyDescriptor NO_FORMATTING_PROPERTY = new PropertyDescriptor
+		.Builder()
+		.name("No Formatting")
+		.displayName("No Formatting")
+		.description("Do not format numbers")
+		.required(true)
+		.allowableValues("true", "false")
+		.addValidator(StandardValidators.NON_EMPTY_VALIDATOR)
+		.build()
+	;
+
 	public static final PropertyDescriptor FILE_TYPE_PROPERTY = new PropertyDescriptor
 		.Builder()
 		.name("File Type")
@@ -109,7 +120,7 @@ public class ExcelToJson extends AbstractProcessor {
 
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
-		descriptors = List.of(FILE_TYPE_PROPERTY, AUTODETECT_TYPES_PROPERTY, PRETTY_PRINTING_PROPERTY);
+		descriptors = List.of(FILE_TYPE_PROPERTY, AUTODETECT_TYPES_PROPERTY, PRETTY_PRINTING_PROPERTY, NO_FORMATTING_PROPERTY);
 		relationships = Set.of(REL_SUCCESS);
 	}
 
@@ -159,6 +170,7 @@ public class ExcelToJson extends AbstractProcessor {
 
 		final var autodetectTypes = context.getProperty(AUTODETECT_TYPES_PROPERTY.getName());
 		final var prettyPrinting = context.getProperty(PRETTY_PRINTING_PROPERTY.getName());
+		final var noFormatting = context.getProperty(NO_FORMATTING_PROPERTY.getName());
 		final var fileType = context.getProperty(FILE_TYPE_PROPERTY.getName());
 
 		final var fileName = flowFile.getAttribute(CoreAttributes.FILENAME.key());
@@ -172,7 +184,8 @@ public class ExcelToJson extends AbstractProcessor {
 					mappedProperties,
 					parseFileType(fileType, fileName),
 					autodetectTypes != null && autodetectTypes.getValue().equalsIgnoreCase("true"),
-					prettyPrinting != null && prettyPrinting.getValue().equalsIgnoreCase("true")
+					prettyPrinting != null && prettyPrinting.getValue().equalsIgnoreCase("true"),
+					noFormatting != null && noFormatting.getValue().equalsIgnoreCase("true")
 				);
 		} catch (Exception exception) {
 				logger.log(Level.SEVERE, "exception", exception);

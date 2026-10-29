@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 public interface Reader {
 
-	public void read(final InputStream inputStream, final Handler contentHandler) throws Exception;
+	public void read(final InputStream inputStream, final Handler contentHandler, final boolean noFormatting) throws Exception;
 
 }
 

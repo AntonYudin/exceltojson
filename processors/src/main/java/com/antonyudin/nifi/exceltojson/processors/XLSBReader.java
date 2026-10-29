@@ -25,6 +25,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 import org.apache.poi.xssf.binary.XSSFBSharedStringsTable;
 import org.apache.poi.xssf.binary.XSSFBSheetHandler;
@@ -42,7 +43,7 @@ public class XLSBReader implements Reader {
 	private final static Logger logger = Logger.getLogger(XLSBReader.class.getName());
 
 
-	public void read(final InputStream inputStream, final Handler handler) throws Exception {
+	public void read(final InputStream inputStream, final Handler handler, final boolean noFormatting) throws Exception {
 		logger.info("read(" + inputStream + ", " + handler + ")");
 
 		try (final var pkg = OPCPackage.open(inputStream)) {
@@ -67,7 +68,7 @@ public class XLSBReader implements Reader {
 					iterator.getXSSFBSheetComments(),
 					sst,
 					contentsHandler,
-					new DataFormatter(),
+					(noFormatting? new CustomDataFormatter(): new DataFormatter()),
 					false
 				);
 
@@ -82,7 +83,6 @@ public class XLSBReader implements Reader {
 	public static class ContentsHandler implements XSSFSheetXMLHandler.SheetContentsHandler {
 
 		private final Handler handler;
-
 
 		public ContentsHandler(final Handler handler) {
 			this.handler = handler;

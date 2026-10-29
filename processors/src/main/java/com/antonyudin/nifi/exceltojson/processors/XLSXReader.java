@@ -36,7 +36,7 @@ public class XLSXReader implements Reader {
 	private final static Logger logger = Logger.getLogger(XLSXReader.class.getName());
 
 
-	public void read(final InputStream inputStream, final Handler handler) throws Exception {
+	public void read(final InputStream inputStream, final Handler handler, final boolean noFormatting) throws Exception {
 		logger.info("read(" + inputStream + ", " + handler + ")");
 
 		try (
@@ -44,7 +44,7 @@ public class XLSXReader implements Reader {
 			final var workbook = new XSSFWorkbook(pkg)
 		) {
 
-			final var formatter = new DataFormatter();
+			final var formatter = (noFormatting? new CustomDataFormatter(): new DataFormatter());
 
 			final var formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
 

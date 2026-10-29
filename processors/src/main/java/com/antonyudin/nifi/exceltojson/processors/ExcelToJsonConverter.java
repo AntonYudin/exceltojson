@@ -56,10 +56,11 @@ public class ExcelToJsonConverter {
 		final Map<String, String> parameters,
 		final Type type,
 		final boolean autodetectTypes,
-		final boolean prettyPrinting
+		final boolean prettyPrinting,
+		final boolean noFormatting
 	) throws Exception {
 
-		logger.info("convert(" + inputStream + ", " + outputStream + ", " + parameters + ", " + autodetectTypes + ", " + prettyPrinting + ")");
+		logger.info("convert(" + inputStream + ", " + outputStream + ", " + parameters + ", " + autodetectTypes + ", " + prettyPrinting + ", " + noFormatting + ")");
 
 		final var json = (
 			prettyPrinting?
@@ -82,8 +83,8 @@ public class ExcelToJsonConverter {
 		);
 
 		switch (type) {
-			case Type.XLSX: (new XLSXReader()).read(inputStream, contentHandler); break;
-			case Type.XLSB: (new XLSBReader()).read(inputStream, contentHandler); break;
+			case Type.XLSX: (new XLSXReader()).read(inputStream, contentHandler, noFormatting); break;
+			case Type.XLSB: (new XLSBReader()).read(inputStream, contentHandler, noFormatting); break;
 			default:
 				throw new IllegalArgumentException("unknown type: [" + type + "]");
 		}
@@ -167,6 +168,14 @@ public class ExcelToJsonConverter {
 
 		@Override
 		public void startRow(final int rowNumber) {
+			for (var i = lastRowNumber + 1; i < rowNumber; i++) {
+				startRowContinuous(i);
+				endRow(i);
+			}
+			startRowContinuous(rowNumber);
+		}
+
+		protected void startRowContinuous(final int rowNumber) {
 			if ((headerRows > 0) && (!headerRendered)) {
 				json.writeStartObject("header");
 				json.writeStartArray("rows");
@@ -181,11 +190,9 @@ public class ExcelToJsonConverter {
 				json.writeStartArray("rows");
 				contentRendered = true;
 			}
-			if (lastRowNumber < 0) {
-				for (var i = 0; i < rowNumber; i++) {
-					json.writeStartObject();
-					json.writeEnd();
-				}
+			for (var i = lastRowNumber + 1; i < rowNumber; i++) {
+				json.writeStartObject();
+				json.writeEnd();
 			}
 			json.writeStartObject();
 			lastRowNumber = rowNumber;
@@ -193,8 +200,10 @@ public class ExcelToJsonConverter {
 
 		@Override
 		public void endSheet() {
-			json.writeEnd(); // rows
-			json.writeEnd(); // content
+			if (headerRendered || contentRendered) {
+				json.writeEnd(); // rows
+				json.writeEnd(); // content
+			}
 			json.writeEnd(); // sheet
 		}
 
