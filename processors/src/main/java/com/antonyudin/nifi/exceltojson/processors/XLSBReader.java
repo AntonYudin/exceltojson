@@ -18,6 +18,8 @@ package com.antonyudin.nifi.exceltojson.processors;
 
 import java.util.logging.Logger;
 
+import java.text.Format;
+
 import java.io.InputStream;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -26,6 +28,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Comment;
 
 import org.apache.poi.xssf.binary.XSSFBSharedStringsTable;
 import org.apache.poi.xssf.binary.XSSFBSheetHandler;
@@ -43,7 +46,12 @@ public class XLSBReader implements Reader {
 	private final static Logger logger = Logger.getLogger(XLSBReader.class.getName());
 
 
-	public void read(final InputStream inputStream, final Handler handler, final boolean noFormatting) throws Exception {
+	public void read(
+		final InputStream inputStream,
+		final Handler handler,
+		final boolean noFormatting,
+		final Format dateFormat
+	) throws Exception {
 		logger.info("read(" + inputStream + ", " + handler + ")");
 
 		try (final var pkg = OPCPackage.open(inputStream)) {
@@ -68,7 +76,7 @@ public class XLSBReader implements Reader {
 					iterator.getXSSFBSheetComments(),
 					sst,
 					contentsHandler,
-					(noFormatting? new CustomDataFormatter(): new DataFormatter()),
+					new CustomDataFormatter(noFormatting, dateFormat),
 					false
 				);
 
@@ -104,7 +112,7 @@ public class XLSBReader implements Reader {
 		}
 
 		@Override
-		public void cell(final String cellReference, final String formattedValue, final XSSFComment comment) {
+		public void cell(final String cellReference, final String formattedValue, final Comment comment) {
 			handler.startCell(cellReference, formattedValue);
 		}
 

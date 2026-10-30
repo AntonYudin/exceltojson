@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.text.SimpleDateFormat;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -57,10 +59,11 @@ public class ExcelToJsonConverter {
 		final Type type,
 		final boolean autodetectTypes,
 		final boolean prettyPrinting,
-		final boolean noFormatting
+		final boolean noFormatting,
+		final SimpleDateFormat dateFormat
 	) throws Exception {
 
-		logger.info("convert(" + inputStream + ", " + outputStream + ", " + parameters + ", " + autodetectTypes + ", " + prettyPrinting + ", " + noFormatting + ")");
+		logger.info("convert(" + inputStream + ", " + outputStream + ", " + parameters + ", " + autodetectTypes + ", " + prettyPrinting + ", " + noFormatting + ", " + dateFormat + ")");
 
 		final var json = (
 			prettyPrinting?
@@ -83,8 +86,8 @@ public class ExcelToJsonConverter {
 		);
 
 		switch (type) {
-			case Type.XLSX: (new XLSXReader()).read(inputStream, contentHandler, noFormatting); break;
-			case Type.XLSB: (new XLSBReader()).read(inputStream, contentHandler, noFormatting); break;
+			case Type.XLSX: (new XLSXReader()).read(inputStream, contentHandler, noFormatting, dateFormat); break;
+			case Type.XLSB: (new XLSBReader()).read(inputStream, contentHandler, noFormatting, dateFormat); break;
 			default:
 				throw new IllegalArgumentException("unknown type: [" + type + "]");
 		}

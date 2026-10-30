@@ -23,10 +23,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashMap;
 
+import java.text.SimpleDateFormat;
+
 import java.io.ByteArrayOutputStream;
 
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.PropertyValue;
+import org.apache.nifi.components.Validator;
+import org.apache.nifi.components.ValidationContext;
+import org.apache.nifi.components.ValidationResult;
 
 import org.apache.nifi.flowfile.FlowFile;
 
@@ -96,6 +101,26 @@ public class ExcelToJson extends AbstractProcessor {
 		.build()
 	;
 
+	public static final PropertyDescriptor DATE_FORMAT_PROPERTY = new PropertyDescriptor
+		.Builder()
+		.name("Date Format")
+		.displayName("Date Format")
+		.description("Date Format in SimpleDateTime format")
+		.required(false)
+		.addValidator(
+			new Validator() {
+				@Override
+				public ValidationResult validate(final String subject, final String input, final ValidationContext context) {
+					final ValidationResult.Builder builder = new ValidationResult.Builder();
+					builder.subject(subject).input(input);
+					builder.valid(true);
+					return builder.build();
+				}
+			}
+		)
+		.build()
+	;
+
 	public static final PropertyDescriptor FILE_TYPE_PROPERTY = new PropertyDescriptor
 		.Builder()
 		.name("File Type")
@@ -120,7 +145,13 @@ public class ExcelToJson extends AbstractProcessor {
 
 	@Override
 	protected void init(final ProcessorInitializationContext context) {
-		descriptors = List.of(FILE_TYPE_PROPERTY, AUTODETECT_TYPES_PROPERTY, PRETTY_PRINTING_PROPERTY, NO_FORMATTING_PROPERTY);
+		descriptors = List.of(
+			FILE_TYPE_PROPERTY,
+			AUTODETECT_TYPES_PROPERTY,
+			PRETTY_PRINTING_PROPERTY,
+			NO_FORMATTING_PROPERTY,
+			DATE_FORMAT_PROPERTY
+		);
 		relationships = Set.of(REL_SUCCESS);
 	}
 
@@ -172,6 +203,8 @@ public class ExcelToJson extends AbstractProcessor {
 		final var prettyPrinting = context.getProperty(PRETTY_PRINTING_PROPERTY.getName());
 		final var noFormatting = context.getProperty(NO_FORMATTING_PROPERTY.getName());
 		final var fileType = context.getProperty(FILE_TYPE_PROPERTY.getName());
+		final var dateFormat = context.getProperty(DATE_FORMAT_PROPERTY.getName());
+		logger.info("dateFormat -> [" + dateFormat + "]");
 
 		final var fileName = flowFile.getAttribute(CoreAttributes.FILENAME.key());
 
@@ -185,9 +218,10 @@ public class ExcelToJson extends AbstractProcessor {
 					parseFileType(fileType, fileName),
 					autodetectTypes != null && autodetectTypes.getValue().equalsIgnoreCase("true"),
 					prettyPrinting != null && prettyPrinting.getValue().equalsIgnoreCase("true"),
-					noFormatting != null && noFormatting.getValue().equalsIgnoreCase("true")
+					noFormatting != null && noFormatting.getValue().equalsIgnoreCase("true"),
+					((dateFormat != null) && (dateFormat.getValue() != null)) ? new SimpleDateFormat(dateFormat.getValue()): null
 				);
-		} catch (Exception exception) {
+			} catch (Exception exception) {
 				logger.log(Level.SEVERE, "exception", exception);
 			}
 		});

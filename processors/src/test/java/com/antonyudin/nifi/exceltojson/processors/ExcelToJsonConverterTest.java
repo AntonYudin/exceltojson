@@ -35,7 +35,7 @@ public class ExcelToJsonConverterTest {
 				final var outputStream = new ByteArrayOutputStream();
 		) {
 			System.err.println("inputStream: " + inputStream);
-			(new ExcelToJsonConverter()).convert(inputStream, outputStream, null, ExcelToJsonConverter.Type.XLSX, true, true, true);
+			(new ExcelToJsonConverter()).convert(inputStream, outputStream, null, ExcelToJsonConverter.Type.XLSX, true, true, true, null);
 			System.err.println("result: " + (new String(outputStream.toByteArray(), "UTF-8")));
 		}
 	}
@@ -48,7 +48,7 @@ public class ExcelToJsonConverterTest {
 				final var outputStream = new ByteArrayOutputStream();
 		) {
 			System.err.println("inputStream: " + inputStream);
-			(new ExcelToJsonConverter()).convert(inputStream, outputStream, null, ExcelToJsonConverter.Type.XLSX, true, true, true);
+			(new ExcelToJsonConverter()).convert(inputStream, outputStream, null, ExcelToJsonConverter.Type.XLSX, true, true, true, null);
 			System.err.println("result: " + (new String(outputStream.toByteArray(), "UTF-8")));
 		}
 	}
@@ -61,7 +61,7 @@ public class ExcelToJsonConverterTest {
 				final var outputStream = new ByteArrayOutputStream();
 		) {
 			System.err.println("inputStream: " + inputStream);
-			(new ExcelToJsonConverter()).convert(inputStream, outputStream, null, ExcelToJsonConverter.Type.XLSB, true, true, true);
+			(new ExcelToJsonConverter()).convert(inputStream, outputStream, null, ExcelToJsonConverter.Type.XLSB, true, true, true, null);
 			System.err.println("result: " + (new String(outputStream.toByteArray(), "UTF-8")));
 		}
 	}

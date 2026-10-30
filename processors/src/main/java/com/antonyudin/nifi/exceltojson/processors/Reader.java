@@ -18,10 +18,17 @@ package com.antonyudin.nifi.exceltojson.processors;
 
 import java.io.InputStream;
 
+import java.text.Format;
+
 
 public interface Reader {
 
-	public void read(final InputStream inputStream, final Handler contentHandler, final boolean noFormatting) throws Exception;
+	public void read(
+		final InputStream inputStream,
+		final Handler contentHandler,
+		final boolean noFormatting,
+		final Format dateFormat
+	) throws Exception;
 
 }
 

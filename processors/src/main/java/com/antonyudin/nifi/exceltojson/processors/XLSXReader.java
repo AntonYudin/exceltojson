@@ -18,6 +18,8 @@ package com.antonyudin.nifi.exceltojson.processors;
 
 import java.util.logging.Logger;
 
+import java.text.Format;
+
 import java.io.InputStream;
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -36,7 +38,12 @@ public class XLSXReader implements Reader {
 	private final static Logger logger = Logger.getLogger(XLSXReader.class.getName());
 
 
-	public void read(final InputStream inputStream, final Handler handler, final boolean noFormatting) throws Exception {
+	public void read(
+		final InputStream inputStream,
+		final Handler handler,
+		final boolean noFormatting,
+		final Format dateFormat
+	) throws Exception {
 		logger.info("read(" + inputStream + ", " + handler + ")");
 
 		try (
@@ -44,7 +51,7 @@ public class XLSXReader implements Reader {
 			final var workbook = new XSSFWorkbook(pkg)
 		) {
 
-			final var formatter = (noFormatting? new CustomDataFormatter(): new DataFormatter());
+			final var formatter = new CustomDataFormatter(noFormatting, dateFormat);
 
 			final var formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
